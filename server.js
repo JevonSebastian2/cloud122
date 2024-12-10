@@ -1,30 +1,32 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');
 const app = express();
+const port = 3000;
 
-// Middleware to parse JSON data
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// Parse request body
+app.use(express.urlencoded({ extended: true }));
 
-// Endpoint to handle addition
-app.post("/calculate", (req, res) => {
-  const { num1, num2 } = req.body;
+// Serve the frontend
+app.use(express.static(path.join(__dirname, 'public')));
 
-  // Validate input values
-  if (
-    typeof num1 !== "number" ||
-    typeof num2 !== "number" ||
-    num1 < 1 || num1 > 100 ||
-    num2 < 1 || num2 > 100
-  ) {
-    return res.status(400).json({ message: "Input angka harus di antara 1-100. Masukkan ulang." });
-  }
+// Handle form submission
+app.post('/calculate', (req, res) => {
+    const num1 = parseInt(req.body.num1);
+    const num2 = parseInt(req.body.num2);
 
-  // Perform the addition
-  const result = num1 + num2;
-  res.json({ result });
+    if (isNaN(num1) || isNaN(num2)) {
+        return res.send('Input harus berupa angka!');
+    }
+
+    if (num1 > 100 || num2 > 100) {
+        return res.send('Masukkan angka antara 1-100!');
+    }
+
+    const result = num1 + num2;
+    res.send(`Hasil penjumlahan: ${result}`);
 });
 
 // Start the server
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
