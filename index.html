@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pertambahan 1-100</title>
+    <title>Pertambahan Angka</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,17 +14,33 @@
             font-size: 1.5em;
             margin-top: 20px;
         }
+        input {
+            padding: 5px;
+            font-size: 1em;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
-    <h1>Web Aplikasi Pertambahan 1-100</h1>
+    <h1>Web Aplikasi Pertambahan</h1>
+    <label for="upperLimit">Masukkan batas atas:</label>
+    <input type="number" id="upperLimit" placeholder="Contoh: 100">
     <button id="calculateButton">Hitung Jumlah</button>
     <div id="result"></div>
 
     <script>
         document.getElementById('calculateButton').addEventListener('click', async () => {
+            const upperLimit = document.getElementById('upperLimit').value;
+            if (!upperLimit || upperLimit <= 0) {
+                document.getElementById('result').innerText = 'Masukkan angka yang valid!';
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:3000/calculate');
+                const response = await fetch(`/api/calculate?upperLimit=${upperLimit}`);
                 const data = await response.json();
                 document.getElementById('result').innerText = `Hasil: ${data.result}`;
             } catch (error) {
